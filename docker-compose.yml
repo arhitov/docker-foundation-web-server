@@ -1,0 +1,138 @@
+version: "3.8"
+
+services:
+
+  app:
+    build:
+      context: ./etc/application
+      dockerfile: Dockerfile
+      args:
+        WWWUSER: '${WWWUSER}'
+        WWWGROUP: '${WWWGROUP}'
+    image: application/php-8.2
+    container_name: app
+    restart: always
+    stdin_open: true # docker run -i
+    tty: true        # docker run -t
+    environment:
+      WWWUSER: '${WWWUSER}'
+      WWWGROUP: '${WWWGROUP}'
+      XDEBUG_MODE: '${APP_XDEBUG_MODE:-off}'
+      XDEBUG_CONFIG: '${APP_XDEBUG_CONFIG:-client_host=host.docker.internal}'
+      IGNITION_LOCAL_SITES_PATH: '${PWD}'
+    volumes:
+      - './application:/var/www'
+      - './etc/php/8.2/php.ini:/usr/local/etc/php/conf.d/local.ini'
+      - './log/php/8.2/error.log:/var/log/php8.2-fpm.log'
+    networks:
+      - app-network
+    depends_on:
+      - frontend
+      - cache
+      - db_common
+      - db_product
+
+  db_common:
+    image: 'mariadb:${MARIADB_VERSION:-11}'
+    restart: always
+    stdin_open: true # docker run -i
+    tty: true        # docker run -t
+    environment:
+      MARIADB_ROOT_PASSWORD: '${MARIADB_PASSWORD}'
+      MARIADB_ROOT_HOST: "127.0.0.1"
+      MARIADB_DATABASE: 'fulfillment_common'
+      MARIADB_USER: '${MARIADB_USERNAME}'
+      MARIADB_PASSWORD: '${MARIADB_PASSWORD}'
+      MARIADB_ALLOW_EMPTY_PASSWORD: 1
+    ports:
+      - 38081:3806
+    volumes:
+       - './var/db-common:/var/lib/mysql'
+    networks:
+      - app-network
+    healthcheck:
+      test:
+        - CMD
+        - mysqladmin
+        - ping
+        - '-p${MARIADB_PASSWORD}'
+      retries: 3
+      timeout: 5s
+
+  db_product:
+    image: 'mariadb:${MARIADB_VERSION:-11}'
+    restart: always
+    stdin_open: true # docker run -i
+    tty: true        # docker run -t
+    environment:
+      MARIADB_ROOT_PASSWORD: '${MARIADB_PASSWORD}'
+      MARIADB_ROOT_HOST: "127.0.0.1"
+      MARIADB_DATABASE: 'fulfillment_product'
+      MARIADB_USER: '${MARIADB_USERNAME}'
+      MARIADB_PASSWORD: '${MARIADB_PASSWORD}'
+      MARIADB_ALLOW_EMPTY_PASSWORD: 1
+    ports:
+      - 38082:3806
+    volumes:
+       - './var/db-product:/var/lib/mysql'
+    networks:
+      - app-network
+    healthcheck:
+      test:
+        - CMD
+        - mysqladmin
+        - ping
+        - '-p${MARIADB_PASSWORD}'
+      retries: 3
+      timeout: 5s
+
+  #Nginx Service
+  frontend:
+    image: 'nginx:${NGINX_VERSION:-1.25}'
+    restart: always
+    stdin_open: true # docker run -i
+    tty: true        # docker run -t
+    extra_hosts:
+      - 'host.docker.internal:host-gateway'
+    ports:
+      - '${APP_PORT:-80}:80'
+      # - '${APP_PORT_SSL:-443}:443'
+    volumes:
+      - './etc/nginx/nginx.conf:/etc/nginx/nginx.conf:ro'
+      - './application/public:/var/www/public'
+      - './log/nginx:/var/log/nginx'
+    networks:
+      - app-network
+
+  cache:
+    image: 'redis:${REDIS_VERSION:-7.2}'
+    ports:
+      - '${FORWARD_REDIS_PORT:-6379}:6379'
+    volumes:
+      - './var/redis:/data'
+    networks:
+      - app-network
+    healthcheck:
+      test:
+        - CMD
+        - redis-cli
+        - ping
+      retries: 3
+      timeout: 5s
+
+  # admin panel for mariadb
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
+    networks:
+      - app-network
+    depends_on:
+      - db_common
+      - db_product
+
+#Docker Networks
+networks:
+  app-network:
+    driver: bridge
