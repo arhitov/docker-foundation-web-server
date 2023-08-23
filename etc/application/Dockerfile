@@ -92,9 +92,6 @@ RUN \
 
 # RUN setcap "cap_net_bind_service=+ep" /usr/bin/php8.2
 
-CMD chmod 777 -R /var/www/storage/logs
-CMD chmod 777 -R /var/www/storage/framework
-
 # # Expose port 9000 and start php-fpm server
 EXPOSE 9000
 CMD ["php-fpm"]
