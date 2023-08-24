@@ -26,7 +26,6 @@ services:
     networks:
       - application-network
     depends_on:
-      - frontend
       - redis
       - db_common
       - db_product
@@ -104,6 +103,8 @@ services:
       - './log/nginx:/var/log/nginx'
     networks:
       - application-network
+    depends_on:
+      - application
 
   redis:
     # container_name: redis
