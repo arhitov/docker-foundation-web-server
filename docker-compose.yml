@@ -3,7 +3,7 @@ version: "3"
 services:
 
   application:
-    container_name: application
+    # container_name: application
     build:
       context: ./etc/application
       dockerfile: Dockerfile
@@ -27,12 +27,12 @@ services:
       - application-network
     depends_on:
       - frontend
-      - cache
+      - redis
       - db_common
       - db_product
 
   db_common:
-    container_name: db_common
+    # container_name: db_common
     image: 'mariadb:${MARIADB_VERSION:-11}'
     restart: always
     stdin_open: true # docker run -i
@@ -59,7 +59,7 @@ services:
       timeout: 5s
 
   db_product:
-    container_name: db_product
+    # container_name: db_product
     image: 'mariadb:${MARIADB_VERSION:-11}'
     restart: always
     stdin_open: true # docker run -i
@@ -88,7 +88,7 @@ services:
 
   #Nginx Service
   frontend:
-    container_name: frontend
+    # container_name: frontend
     image: 'nginx:${NGINX_VERSION:-1.25}'
     restart: always
     stdin_open: true # docker run -i
@@ -105,7 +105,8 @@ services:
     networks:
       - application-network
 
-  cache:
+  redis:
+    # container_name: redis
     image: 'redis:${REDIS_VERSION:-7.2}'
     ports:
       - '${FORWARD_REDIS_PORT:-6379}:6379'
@@ -123,7 +124,7 @@ services:
 
   # admin panel for mariadb
   adminer:
-    container_name: adminer
+    # container_name: adminer
     image: adminer
     restart: always
     ports:
