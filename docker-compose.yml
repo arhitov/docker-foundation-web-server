@@ -26,9 +26,10 @@ services:
     networks:
       - application-network
     depends_on:
-      - redis
       - db_common
       - db_product
+      - redis
+      - rabbitmq
 
   db_common:
     # container_name: db_common
@@ -40,8 +41,8 @@ services:
       MARIADB_ROOT_PASSWORD: '${MARIADB_PASSWORD}'
       MARIADB_ROOT_HOST: "127.0.0.1"
       MARIADB_DATABASE: '${MARIADB_DATABASE_COMMON:-default_base}'
-      MARIADB_USER: '${MARIADB_USERNAME}'
-      MARIADB_PASSWORD: '${MARIADB_PASSWORD}'
+      MARIADB_USER: '${MARIADB_USERNAME:-user}'
+      MARIADB_PASSWORD: '${MARIADB_PASSWORD:-secret}'
     ports:
       - '${MARIADB_PORT_COMMON:-38081}:3806'
     volumes:
@@ -67,8 +68,8 @@ services:
       MARIADB_ROOT_PASSWORD: '${MARIADB_PASSWORD}'
       MARIADB_ROOT_HOST: "127.0.0.1"
       MARIADB_DATABASE: '${MARIADB_DATABASE_PRODUCT:-default_base}'
-      MARIADB_USER: '${MARIADB_USERNAME}'
-      MARIADB_PASSWORD: '${MARIADB_PASSWORD}'
+      MARIADB_USER: '${MARIADB_USERNAME:-user}'
+      MARIADB_PASSWORD: '${MARIADB_PASSWORD:-secret}'
       MARIADB_ALLOW_EMPTY_PASSWORD: 1
     ports:
       - '${MARIADB_PORT_PRODUCT:-38082}:3806'
@@ -84,27 +85,6 @@ services:
         - '-p${MARIADB_PASSWORD}'
       retries: 3
       timeout: 5s
-
-  #Nginx Service
-  frontend:
-    # container_name: frontend
-    image: 'nginx:${NGINX_VERSION:-1.25}'
-    restart: always
-    stdin_open: true # docker run -i
-    tty: true        # docker run -t
-    extra_hosts:
-      - 'host.docker.internal:host-gateway'
-    ports:
-      - '${APP_PORT:-80}:80'
-      # - '${APP_PORT_SSL:-443}:443'
-    volumes:
-      - './etc/nginx/nginx.conf:/etc/nginx/nginx.conf:ro'
-      - './application/public:/var/www/public'
-      - './log/nginx:/var/log/nginx'
-    networks:
-      - application-network
-    depends_on:
-      - application
 
   redis:
     # container_name: redis
@@ -122,6 +102,47 @@ services:
         - ping
       retries: 3
       timeout: 5s
+
+  rabbitmq:
+    # container_name: rabbitmq
+    image: 'rabbitmq:${RABBITMQ_VERSION:-3.12}'
+    hostname: rabbitmq
+    restart: always
+    stdin_open: true # docker run -i
+    tty: true        # docker run -t
+    environment:
+      RABBITMQ_DEFAULT_USER: '${RABBITMQ_USERNAME:-user}'
+      RABBITMQ_DEFAULT_PASS: '${RABBITMQ_PASSWORD:-secret}'
+      RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS: '-rabbit log_levels [{connection,error},{default,error}] disk_free_limit ${RABBITMQ_DISK_FREE_LIMIT:-2147483648}'
+    ports:
+      - '${RABBITMQ_MANAGEMENT_PORT:-15672}:15672'
+      # - '${RABBITMQ_FORWARD_PORT:-5672}:5672'
+    volumes:
+      - './var/rabbitmq:/var/lib/rabbitmq/mnesia/rabbit@rabbitmq'
+    networks:
+      - application-network
+
+  #Nginx Service
+  frontend:
+    # container_name: frontend
+    image: 'nginx:${NGINX_VERSION:-1.25}'
+    restart: always
+    stdin_open: true # docker run -i
+    tty: true        # docker run -t
+    extra_hosts:
+      - 'host.docker.internal:host-gateway'
+    ports:
+      - '${APP_PORT:-80}:80'
+      - '${APP_PORT_SSL:-443}:443'
+    volumes:
+      - './etc/nginx/nginx.conf:/etc/nginx/nginx.conf:ro'
+      - './etc/nginx/ssl:/etc/nginx/ssl:ro'
+      - './application/public:/var/www/public'
+      - './log/nginx:/var/log/nginx'
+    networks:
+      - application-network
+    depends_on:
+      - application
 
   # admin panel for mariadb
   adminer:

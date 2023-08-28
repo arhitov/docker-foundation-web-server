@@ -14,7 +14,7 @@ This web server foundation based on Docker containers
 * [x] Container db_common on MariaDB (11)
 * [x] Container db_product on MariaDB (11)
 * [x] Container cache on Redis (7.2)
-* [ ] Container ampq on RabbitMQ ()
+* [x] Container ampq on RabbitMQ ()
 * [x] Container adminer on adminer (latest)
 
 ## Sponsor my work!
@@ -30,7 +30,7 @@ Alexander Arhitov [clgsru@gmail.com](mailto:clgsru@gmail.com)
 Welcome here! :metal:
 
 [ico-docker-support]: https://img.shields.io/badge/docker-24.0.5-blue.svg
-[ico-docker-compose-support]: https://img.shields.io/badge/docker_compose-1.29.2-blue.svg
+[ico-docker-compose-support]: https://img.shields.io/badge/docker_compose-1.25.0-blue.svg
 [ico-php-support]: https://img.shields.io/badge/PHP-8.2-blue.svg
 [ico-license]: https://img.shields.io/badge/license-MIT-brightgreen.svg
 [link-license]: LICENSE.md
