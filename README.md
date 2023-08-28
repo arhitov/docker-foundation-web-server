@@ -21,7 +21,6 @@ This web server foundation based on Docker containers
 If you think this package helped you in any way, you can sponsor me! I am a free developer, so your help will be very helpful to me. :blush:
 
 ## License
-
 This is open-sourced software licensed under the [MIT license][link-license].
 
 ## Authors
