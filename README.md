@@ -22,7 +22,7 @@ If you think this package helped you in any way, you can sponsor me! I am a free
 
 ## License
 
-LaravelRabbitMQ is open-sourced software licensed under the [MIT license][link-license].
+This is open-sourced software licensed under the [MIT license][link-license].
 
 ## Authors
 Alexander Arhitov [clgsru@gmail.com](mailto:clgsru@gmail.com)
