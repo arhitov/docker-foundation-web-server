@@ -44,7 +44,7 @@ services:
       MARIADB_USER: '${MARIADB_USERNAME:-user}'
       MARIADB_PASSWORD: '${MARIADB_PASSWORD:-secret}'
     ports:
-      - '${MARIADB_PORT_COMMON:-38081}:3806'
+      - '${MARIADB_FORWARD_PORT_COMMON:-38081}:3806'
     volumes:
        - './var/db-common/${MARIADB_DATABASE_COMMON:-default_base}:/var/lib/mysql/${MARIADB_DATABASE_COMMON:-default_base}'
     networks:
@@ -72,7 +72,7 @@ services:
       MARIADB_PASSWORD: '${MARIADB_PASSWORD:-secret}'
       MARIADB_ALLOW_EMPTY_PASSWORD: 1
     ports:
-      - '${MARIADB_PORT_PRODUCT:-38082}:3806'
+      - '${MARIADB_FORWARD_PORT_PRODUCT:-38082}:3806'
     volumes:
        - './var/db-product/${MARIADB_DATABASE_PRODUCT:-default_base}:/var/lib/mysql/${MARIADB_DATABASE_PRODUCT:-default_base}'
     networks:
