@@ -89,8 +89,8 @@ services:
   redis:
     # container_name: redis
     image: 'redis:${REDIS_VERSION:-7.2}'
-    ports:
-      - '${FORWARD_REDIS_PORT:-6379}:6379'
+    # ports:
+    #   - '${REDIS_FORWARD_PORT:-6379}:6379'
     volumes:
       - './var/redis:/data'
     networks:
