@@ -46,7 +46,7 @@ services:
     ports:
       - '${MARIADB_FORWARD_PORT_COMMON:-38081}:3806'
     volumes:
-       - './var/db-common/${MARIADB_DATABASE_COMMON:-default_base}:/var/lib/mysql/${MARIADB_DATABASE_COMMON:-default_base}'
+       - './var/db-common:/var/lib/mysql'
     networks:
       - application-network
     healthcheck:
@@ -74,7 +74,7 @@ services:
     ports:
       - '${MARIADB_FORWARD_PORT_PRODUCT:-38082}:3806'
     volumes:
-       - './var/db-product/${MARIADB_DATABASE_PRODUCT:-default_base}:/var/lib/mysql/${MARIADB_DATABASE_PRODUCT:-default_base}'
+       - './var/db-product:/var/lib/mysql'
     networks:
       - application-network
     healthcheck:
