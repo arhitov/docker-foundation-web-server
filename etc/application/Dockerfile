@@ -5,6 +5,8 @@ ARG WWWGROUP
 ARG XDEBUG_MODE="develop,trace"
 ARG XDEBUG_VERSION="xdebug-3.2.2"
 ARG XDEBUG_PORT="9003"
+ARG NODEJS_VERSION="20.x"
+ARG NPM_VERSION="10.1.0"
 
 # Set working directory
 WORKDIR /var/www
@@ -83,6 +85,12 @@ RUN yes | pecl install ${XDEBUG_VERSION} \
 # Install Composer
 RUN \
     curl -sLS https://getcomposer.org/installer | php -- --install-dir=/usr/bin/ --filename=composer
+
+# Install NPM
+RUN \
+    curl -sL https://deb.nodesource.com/setup_${NODEJS_VERSION} | bash - \
+    && apt-get install -y nodejs \
+    && npm install -g npm@${NPM_VERSION}
 
 # Clear cache
 RUN \
