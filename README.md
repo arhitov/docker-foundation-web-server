@@ -10,7 +10,7 @@ This web server foundation based on Docker containers
 
 ## Supported
 * [x] Container frontend on nginx (1.25)
-* [x] Container app on PHP (8.2-fpm-bullseye)
+* [x] Container application on PHP (8.2-fpm-bullseye)
   * [x] php-ext-pdo_mysql
   * [x] php-ext-mysqli
   * [x] php-ext-redis
@@ -19,6 +19,7 @@ This web server foundation based on Docker containers
   * [x] xdebug
   * [x] NodeJs
   * [x] NPM
+  * [x] wkhtmltopdf
 * [x] Container db_common on MariaDB (11)
 * [x] Container db_product on MariaDB (11)
 * [x] Container cache on Redis (7.2)

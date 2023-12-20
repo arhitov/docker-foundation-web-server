@@ -92,6 +92,25 @@ RUN \
     && apt-get install -y nodejs \
     && npm install -g npm@${NPM_VERSION}
 
+# Install wkhtmltopdf
+RUN \
+    apt-get update \
+    && apt-get -y install \
+        libxrender1 \
+        libfontconfig \
+        xz-utils \
+        fontconfig \
+        libfontenc1 \
+        x11-common \
+        xfonts-75dpi \
+        xfonts-base \
+        xfonts-encodings \
+        xfonts-utils \
+        libfontconfig1-dev \
+    && curl "https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6.1-2/wkhtmltox_0.12.6.1-2.bullseye_amd64.deb" -L -o "wkhtmltopdf.deb" \
+    && dpkg -i wkhtmltopdf.deb \
+    && export QT_QPA_PLATFORM=offscreen
+
 # Clear cache
 RUN \
     apt-get -y autoremove \
