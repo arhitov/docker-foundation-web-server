@@ -21,7 +21,7 @@ services:
       XDEBUG_CONFIG: '${APP_XDEBUG_CONFIG:-client_host=host.docker.internal}'
       IGNITION_LOCAL_SITES_PATH: '${PWD}'
     volumes:
-      - './application:/var/www'
+      - '${APP_DIR_ROOT:-./application}:/var/www'
       - './etc/php/8.2/php.ini:/usr/local/etc/php/conf.d/local.ini:ro'
     networks:
       - application-network
@@ -161,3 +161,6 @@ services:
 networks:
   application-network:
     driver: bridge
+    driver_opts:
+      com.docker.network.bridge.name: '${APP_NETWORK_BRIDGE_NAME}'
+
