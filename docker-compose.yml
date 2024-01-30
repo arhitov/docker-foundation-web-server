@@ -11,7 +11,7 @@ services:
         WWWUSER: '${WWWUSER}'
         WWWGROUP: '${WWWGROUP}'
     image: application/php-8.2
-    restart: always
+    restart: '${DOCKER_CONTAINER_RESTART}'
     stdin_open: true # docker run -i
     tty: true        # docker run -t
     environment:
@@ -34,7 +34,7 @@ services:
   db_common:
     # container_name: db_common
     image: 'mariadb:${MARIADB_VERSION:-11}'
-    restart: always
+    restart: '${DOCKER_CONTAINER_RESTART}'
     stdin_open: true # docker run -i
     tty: true        # docker run -t
     environment:
@@ -61,7 +61,7 @@ services:
   db_product:
     # container_name: db_product
     image: 'mariadb:${MARIADB_VERSION:-11}'
-    restart: always
+    restart: '${DOCKER_CONTAINER_RESTART}'
     stdin_open: true # docker run -i
     tty: true        # docker run -t
     environment:
@@ -107,7 +107,7 @@ services:
     # container_name: rabbitmq
     image: 'rabbitmq:${RABBITMQ_VERSION:-3.12}'
     hostname: rabbitmq
-    restart: always
+    restart: '${DOCKER_CONTAINER_RESTART}'
     stdin_open: true # docker run -i
     tty: true        # docker run -t
     environment:
@@ -126,7 +126,7 @@ services:
   frontend:
     # container_name: frontend
     image: 'nginx:${NGINX_VERSION:-1.25}'
-    restart: always
+    restart: '${DOCKER_CONTAINER_RESTART}'
     stdin_open: true # docker run -i
     tty: true        # docker run -t
     extra_hosts:
@@ -148,7 +148,7 @@ services:
   adminer:
     # container_name: adminer
     image: adminer
-    restart: always
+    restart: '${DOCKER_CONTAINER_RESTART}'
     ports:
       - '${ADMINER_PORT:-8080}:8080'
     networks:
