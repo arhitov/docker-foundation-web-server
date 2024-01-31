@@ -90,8 +90,10 @@ services:
     # container_name: redis
     image: 'redis:${REDIS_VERSION:-7.2}'
     restart: '${DOCKER_CONTAINER_RESTART}'
-    # ports:
-    #   - '${REDIS_FORWARD_PORT:-6379}:6379'
+    stdin_open: true # docker run -i
+    tty: true        # docker run -t
+    ports:
+      - '${REDIS_FORWARD_PORT:-6379}:6379'
     volumes:
       - './var/redis:/data'
     networks:
